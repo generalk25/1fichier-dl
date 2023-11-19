@@ -204,7 +204,7 @@ class GuiBehavior:
         Calls FilterWorker()
         '''
         logging.debug('Call add_links')
-        # 로딩 오버레이 표시
+        # Show loading overlay
         self.show_loading_overlay()
         worker = FilterWorker(
             self, cached_download, (self.gui.password.text() if not cached_download else ''))

@@ -144,7 +144,8 @@ def is_valid_link(url: str) -> bool:
         'pjointe.com/',
         'tenvoi.com/',
         'dl4free.com/',
-        'ouo.io/'
+        'ouo.io/',
+        'ouo.press/'
     ]
 
     return any([x in url.lower() for x in domains])

@@ -43,8 +43,8 @@ class FilterWorker(QRunnable):
             links = self.links.toPlainText().splitlines()
             for link in links:
                 logging.debug('valid_links:'+str(link.strip()))
-                # If the shortened URL is ouo bypass, recaptcha bypass
-                if 'ouo.io' in link:
+                # If the shortened URL is ouo.io or ouo.press bypass, recaptcha bypass
+                if 'ouo.io' in link or 'ouo.press' in link:
                     link = ouo_bypass(url=link)['bypassed_link']
                     logging.debug('bypassed link: ' + str(link))
 

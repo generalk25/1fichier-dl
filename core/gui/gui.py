@@ -99,7 +99,7 @@ class GuiBehavior:
         self.filter_thread = QThreadPool()
         self.download_thread = QThreadPool()
         # Limits concurrent downloads to 1.
-        self.download_thread.setMaxThreadCount(3)
+        self.download_thread.setMaxThreadCount(1)
         self.download_workers = []
         self.gui = gui
         self.handle_init()
@@ -283,19 +283,47 @@ class GuiBehavior:
             qdarktheme.setup_theme("dark")
             # self.gui.app.setPalette(dark_theme)
 
+    def get_language(self):
+        language = os.getenv('LANGUAGE') or 'en' # Get language from environment variable
+        return language
+
+    def set_language(self, language=None):
+        if language:
+            self.gui.theme_select.setCurrentIndex(language)
+
+        if(self.gui.theme_select.currentIndex()) :
+            return 'kr'
+        else :
+            return 'en'
+
+    def load_messages(self, language):
+        messages = {}
+        messages_file = f'messages_{language}.txt'
+
+        with open(messages_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                key, value = line.strip().split(',')
+                messages[key] = value
+
+        return messages
+
     def save_settings(self):
         with open(abs_config('app/settings'), 'wb') as f:
             settings = []
-            settings.append(self.gui.dl_directory_input.text())
             # Download Directory - 0
+            settings.append(self.gui.dl_directory_input.text())
             # Theme              - 1
             settings.append(self.gui.theme_select.currentIndex())
-            settings.append(self.gui.timeout_input.value())
             # Timeout            - 2
+            settings.append(self.gui.timeout_input.value())
             # Proxy Settings     - 3
             settings.append(self.gui.proxy_settings_input.text())
-            # Number of multi downloads
-            settings.append(self.gui.thread_input.value())
+            # Thread Settings     - 4
+            settings.append(1)
+            # settings.append(self.gui.thread_input.value())
+            # Select language
+            # Lang Settings     - 5
+            # settings.append(self.gui.lang_select.currentIndex())
             pickle.dump(settings, f)
             self.settings = settings
         self.gui.settings.hide()
@@ -549,6 +577,15 @@ class Gui:
         vbox.setAlignment(Qt.AlignTop)
         form_layout = QFormLayout()
 
+        # Change Lang
+        # form_layout.addRow(QLabel('Language:'))
+
+        # self.lang_select = QComboBox()
+        # self.lang_select.addItems(['Korean', 'English'])
+        # self.lang_select.currentIndexChanged.connect(
+        #     self.actions.set_language)
+        # form_layout.addRow(self.lang_select)
+
         # Change Directory
         form_layout.addRow(QLabel('Download directory:'))
 
@@ -594,14 +631,14 @@ class Gui:
         form_layout_c = QFormLayout()
 
         # Timeout
-        form_layout_c.addRow(QLabel('Timeout (Default 30s):'))
-        self.timeout_input = QSpinBox()
-        if self.actions.settings is not None:
-            self.timeout_input.setValue(self.actions.settings[2])
-        else:
-            self.timeout_input.setValue(30)
+        # form_layout_c.addRow(QLabel('Timeout (Default 30s):'))
+        # self.timeout_input = QSpinBox()
+        # if self.actions.settings is not None:
+        #     self.timeout_input.setValue(self.actions.settings[2])
+        # else:
+        #     self.timeout_input.setValue(30)
 
-        form_layout_c.addRow(self.timeout_input)
+        # form_layout_c.addRow(self.timeout_input)
 
         # Proxy settings
         form_layout_c.addRow(QLabel('Enter proxy list directly:'))
@@ -668,17 +705,24 @@ class Gui:
         self.links.clear()
 
     def add_to_download_list(self):
-        # Disable the 'Add to download list' button.
-        self.add_btn.setText("Adding to download list...")
-        self.add_btn.setEnabled(False)
-
         # It takes the entered link and converts it into a list.
         links_text = self.links.toPlainText()
-        download_links = links_text.split('\n')
-        self.links.setDisabled(True)
-        self.password.setDisabled(True)
 
-        for link in download_links:
-            if link.strip():  # Append only if the line is not blank.
-                # Use 'add_links' to add download links.
-                self.actions.add_links(link)
+        if(links_text) :
+            add_links_texts = []
+            # Disable the 'Add to download list' button.
+            self.add_btn.setText("Adding to download list...")
+            self.add_btn.setEnabled(False)
+
+            download_links = links_text.split('\n')
+            self.links.setDisabled(True)
+            self.password.setDisabled(True)
+
+            for link in download_links:
+                if link.strip():  # Append only if the line is not blank.
+                    add_links_texts.append(link)
+
+             # Use 'add_links' to add download links.
+            self.actions.add_links('\n'.join(add_links_texts))
+        else:
+            alert('Please enter a list of download links.')

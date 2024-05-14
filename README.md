@@ -46,15 +46,6 @@ We help you download at the fastest possible speed without having to wait for ea
 </p>
 <br/>
 <br/>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/leinad4mind/1fichier-dl/main/screenshots/preview_settings1.png"></img>
-</p>
-
-<p align="center">
-  <b>Supports multiple simultaneous downloads and can be increased or decreased depending on the environment.</b>
-</p>
-<br/>
-<br/>
 
 ## 😼 Introduction to key features
 
@@ -65,8 +56,6 @@ We help you download at the fastest possible speed without having to wait for ea
 ⭐ Users can directly enter the proxy list via URL in the Settings > Connections menu. (replaces default proxy)
 
 ⭐ In addition to the `1ficher` link, when you directly enter a shortened `URL` such as `ouo.io`, an automatic link that bypasses `reCAPTCHA` is added.
-
-⭐ Supports simultaneous proxy downloads using `Threading` (basic 3 experimental)
 
 ⭐ The default download folder path is the Windows ‘Download’ folder.
 
@@ -115,6 +104,7 @@ _Your life is short. Don't wait any longer._
 - Added exception handling when adding duplicate downloads with the same file name (processing required after actual 1fichier URL parsing)
 - Supports asynchronous download using `Asyncio` instead of `Threading`, which is slow when downloading simultaneously (increases speed)
 - In addition to the basic specification ‘1ficher’, it is necessary to check whether programs from other similar download sites are supported.
+- Supports simultaneous proxy downloads using `Threading`
   <br/>
   <br/>
 

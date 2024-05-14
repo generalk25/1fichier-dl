@@ -1,0 +1,1 @@
+pyinstaller --windowed --noconsole --onefile --noconfirm --clean --hiddenimport=_cffi_backend --additional-hooks-dir=. --icon=core/gui/res/ico.ico --add-data "core/gui/res/*.*;res/" .\1fichier-dl.py

@@ -144,7 +144,7 @@ class GuiBehavior:
             # settings Use default value of 3 when there is no fourth element in the list
             self.settings = None
             thread_count = 3
-            self.download_thread.setMaxThreadCount(thread_count)
+            self.download_thread.setMaxThreadCount(int(thread_count))
 
     def show_loading_overlay(self):
         '''
@@ -223,7 +223,7 @@ class GuiBehavior:
             index = self.gui.table_model.index(
                 self.gui.table_model.rowCount()-1, 5)
             progress_bar = QProgressBar()
-            progress_bar.setValue(progress)
+            progress_bar.setValue(int(progress))
             progress_bar.setGeometry(200, 150, 200, 30)
             # setting value of n for 2 decimal values
             n = 100

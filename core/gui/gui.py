@@ -319,7 +319,7 @@ class GuiBehavior:
             # Theme              - 1
             settings.append(self.gui.theme_select.currentIndex())
             # Timeout            - 2
-            settings.append(self.gui.timeout_input.value())
+            #settings.append(self.gui.timeout_input.value())
             # Proxy Settings     - 3
             settings.append(self.gui.proxy_settings_input.text())
             # Thread Settings     - 4

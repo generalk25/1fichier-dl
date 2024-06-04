@@ -277,10 +277,14 @@ class GuiBehavior:
             self.gui.theme_select.setCurrentIndex(theme)
 
         if self.gui.theme_select.currentIndex() == 0:
-            qdarktheme.setup_theme("light")
+            setup_theme = getattr(qdarktheme, "setup_theme", None)
+            if callable(setup_theme):
+                qdarktheme.setup_theme("light")
             # self.gui.app.setPalette(self.gui.main.style().standardPalette())
         elif self.gui.theme_select.currentIndex() == 1:
-            qdarktheme.setup_theme("dark")
+            setup_theme = getattr(qdarktheme, "setup_theme", None)
+            if callable(setup_theme):
+                qdarktheme.setup_theme("dark")
             # self.gui.app.setPalette(dark_theme)
 
     def get_language(self):
@@ -315,7 +319,7 @@ class GuiBehavior:
             # Theme              - 1
             settings.append(self.gui.theme_select.currentIndex())
             # Timeout            - 2
-            settings.append(self.gui.timeout_input.value())
+            #settings.append(self.gui.timeout_input.value())
             # Proxy Settings     - 3
             settings.append(self.gui.proxy_settings_input.text())
             # Thread Settings     - 4
@@ -360,9 +364,13 @@ class Gui:
         self.font = None
 
         # Create App
-        qdarktheme.enable_hi_dpi()
+        enable_hi_dpi = getattr(qdarktheme, "enable_hi_dpi", None)
+        if callable(enable_hi_dpi):
+            qdarktheme.enable_hi_dpi()
         app = QApplication(sys.argv)
-        qdarktheme.setup_theme("light")
+        setup_theme = getattr(qdarktheme, "setup_theme", None)
+        if callable(setup_theme):
+            qdarktheme.setup_theme("light")
 
         font_database = QFontDatabase()
         font_id = font_database.addApplicationFont(

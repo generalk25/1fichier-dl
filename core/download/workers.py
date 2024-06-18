@@ -39,37 +39,66 @@ class FilterWorker(QRunnable):
         self.invalid_links = []
 
         try:
-            if self.links.toPlainText():
-                links = self.links.toPlainText().splitlines()
-                for link in links:
-                    link = link.strip()
-                    logging.debug('Processing link: ' + str(link))
+            toPlainText = getattr(self.links, "toPlainText", None)
+            if callable(toPlainText):
+                if self.links.toPlainText():
+                    links = self.links.toPlainText().splitlines()
+                    for link in links:
+                        link = link.strip()
+                        logging.debug('Processing link: ' + str(link))
+                        # If the shortened URL is ouo bypass, recaptcha bypass
+                        try:
+                            if 'ouo.io' in link:
+                                bypassed = ouo_bypass(url=link)
+                                link = bypassed['bypassed_link']
+                                logging.debug('Bypassed link: ' + str(link))
+                        except Exception as e:
+                            logging.error(f"Failed to bypass ouo.io link {link}: {e}")
+                            self.invalid_links.append(link)
+                            continue
 
-                    # Attempt to bypass ouo.io link
-                    try:
-                        if 'ouo.io' in link:
-                            bypassed = ouo_bypass(url=link)
-                            link = bypassed['bypassed_link']
-                            logging.debug('Bypassed link: ' + str(link))
-                    except Exception as e:
-                        logging.error(f"Failed to bypass ouo.io link {link}: {e}")
-                        self.invalid_links.append(link)
-                        continue
+                        # Link validation
+                        try:
+                            if is_valid_link(link):
+                                if not (link.startswith('https://') or link.startswith('http://')):
+                                    link = f'https://{link}'
+                                link = link.split('&')[0]
+                                self.valid_links.append(link)
+                            else:
+                                raise ValueError(f'Invalid link format: {link}')
+                        except ValueError as ve:
+                            logging.warning(ve)
+                            self.invalid_links.append(link)
+                            self.signals.alert_signal.emit(f'Invalid link format: {link}')
+                            continue  # Continue to next link
+            else:
+                link = self.links
+                logging.debug('Processing link: ' + str(link))
+                # If the shortened URL is ouo bypass, recaptcha bypass
+                try:
+                    if 'ouo.io' in link:
+                        bypassed = ouo_bypass(url=link)
+                        link = bypassed['bypassed_link']
+                        logging.debug('Bypassed link: ' + str(link))
+                except Exception as e:
+                    logging.error(f"Failed to bypass ouo.io link {link}: {e}")
+                    self.invalid_links.append(link)
+                    continue
 
-                    # Link validation
-                    try:
-                        if is_valid_link(link):
-                            if not (link.startswith('https://') or link.startswith('http://')):
-                                link = f'https://{link}'
-                            link = link.split('&')[0]
-                            self.valid_links.append(link)
-                        else:
-                            raise ValueError(f'Invalid link format: {link}')
-                    except ValueError as ve:
-                        logging.warning(ve)
-                        self.invalid_links.append(link)
-                        self.signals.alert_signal.emit(f'Invalid link format: {link}')
-                        continue  # Continue to next link
+                # Link validation
+                try:
+                    if is_valid_link(link):
+                        if not (link.startswith('https://') or link.startswith('http://')):
+                            link = f'https://{link}'
+                        link = link.split('&')[0]
+                        self.valid_links.append(link)
+                    else:
+                        raise ValueError(f'Invalid link format: {link}')
+                except ValueError as ve:
+                    logging.warning(ve)
+                    self.invalid_links.append(link)
+                    self.signals.alert_signal.emit(f'Invalid link format: {link}')
+                    continue  # Continue to next link
 
             if len(self.invalid_links) > 0 :
                 self.gui.hide_loading_overlay()

@@ -115,7 +115,7 @@ There are currently only a few dependencies, but there will be no problem if you
 
 ```
 pip install -r requirements.txt
-python 1fichier-dlr.py
+python 1fichier-dl.py
 ```
 
 <br/>

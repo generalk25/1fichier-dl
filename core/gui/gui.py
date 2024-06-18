@@ -319,9 +319,10 @@ class GuiBehavior:
             # Theme              - 1
             settings.append(self.gui.theme_select.currentIndex())
             # Timeout            - 2
-            #settings.append(self.gui.timeout_input.value())
+            settings.append(self.gui.timeout_input.value())
             # Proxy Settings     - 3
             settings.append(self.gui.proxy_settings_input.text())
+			# Number of multi-downloads
             # Thread Settings     - 4
             settings.append(1)
             # settings.append(self.gui.thread_input.value())
@@ -360,7 +361,7 @@ class GuiBehavior:
 class Gui:
     def __init__(self):
         # Init GuiBehavior()
-        self.app_name = '1Fichier Downloader v1.1.0'
+        self.app_name = '1Fichier Downloader v1.2.0'
         self.font = None
 
         # Create App
@@ -639,14 +640,14 @@ class Gui:
         form_layout_c = QFormLayout()
 
         # Timeout
-        # form_layout_c.addRow(QLabel('Timeout (Default 30s):'))
-        # self.timeout_input = QSpinBox()
-        # if self.actions.settings is not None:
-        #     self.timeout_input.setValue(self.actions.settings[2])
-        # else:
-        #     self.timeout_input.setValue(30)
+        form_layout_c.addRow(QLabel('Timeout (default 30s):'))
+        self.timeout_input = QSpinBox()
+        if self.actions.settings is not None:
+            self.timeout_input.setValue(self.actions.settings[2])
+        else:
+            self.timeout_input.setValue(30)
 
-        # form_layout_c.addRow(self.timeout_input)
+        form_layout_c.addRow(self.timeout_input)
 
         # Proxy settings
         form_layout_c.addRow(QLabel('Enter proxy list directly:'))
@@ -656,15 +657,14 @@ class Gui:
 
         form_layout_c.addRow(self.proxy_settings_input)
 
-        # Timeout
-        form_layout_c.addRow(QLabel('Number of simultaneous proxy downloads (requires restart):'))
-        self.thread_input = QSpinBox()
-        if self.actions.settings is not None:
-            self.thread_input.setValue(self.actions.settings[4])
-        else:
-            self.thread_input.setValue(3)
+        # form_layout_c.addRow(QLabel('Number of simultaneous proxy downloads (requires restart):'))
+        # self.thread_input = QSpinBox()
+        # if self.actions.settings is not None:
+        #     self.thread_input.setValue(self.actions.settings[4])
+        # else:
+        #     self.thread_input.setValue(3)
 
-        form_layout_c.addRow(self.thread_input)
+        # form_layout_c.addRow(self.thread_input)
 
         # Bottom buttons
         save_settings_c = QPushButton('Save')

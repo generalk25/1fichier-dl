@@ -83,7 +83,6 @@ class FilterWorker(QRunnable):
                 except Exception as e:
                     logging.error(f"Failed to bypass ouo.io link {link}: {e}")
                     self.invalid_links.append(link)
-                    continue
 
                 # Link validation
                 try:
@@ -98,7 +97,6 @@ class FilterWorker(QRunnable):
                     logging.warning(ve)
                     self.invalid_links.append(link)
                     self.signals.alert_signal.emit(f'Invalid link format: {link}')
-                    continue  # Continue to next link
 
             if len(self.invalid_links) > 0 :
                 self.gui.hide_loading_overlay()

@@ -1,0 +1,1 @@
+FOR REAL MAN, edit the description under windows to use 'pip install -r requirements.txt' because i spent a great deal of time getting this to work only to realize later you'd put it in the 'non windows' version but made no mention of it under windows.
